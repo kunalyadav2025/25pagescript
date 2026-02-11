@@ -1,0 +1,14 @@
+export { handler as getScripts } from './getScripts';
+export { handler as getScriptById } from './getScriptById';
+export { handler as uploadScript } from './uploadScript';
+export { handler as sendOtp } from './sendOtp';
+export { handler as verifyOtp } from './verifyOtp';
+export { handler as likeScript } from './likeScript';
+export { handler as dislikeScript } from './dislikeScript';
+export { handler as getReaction } from './getReaction';
+export { handler as getComments } from './getComments';
+export { handler as addComment } from './addComment';
+export { handler as paymentWebhook } from './paymentWebhook';
+export { handler as verifyPayment } from './verifyPayment';
+export { handler as getGenres } from './getGenres';
+export { handler as updateScript } from './updateScript';

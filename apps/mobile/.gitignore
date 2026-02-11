@@ -1,0 +1,53 @@
+
+.DS_Store
+*.pem
+.env
+.env.*
+!.env.example
+
+# Dependencies
+# Node
+node_modules/
+npm-debug.log
+yarn.lock
+
+# Build outputs
+dist/
+build/
+.expo/
+web-build/
+
+# Serverless
+.serverless/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+
+# Misc
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.pem
+

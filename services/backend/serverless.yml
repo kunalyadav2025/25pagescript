@@ -1,0 +1,291 @@
+service: script25pages
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: ${opt:stage, 'dev'}
+  region: ap-south-1  # Mumbai region for India
+  memorySize: 256
+  timeout: 30
+
+  environment:
+    STAGE: ${self:provider.stage}
+    SCRIPTS_TABLE: ${self:service}-scripts-${self:provider.stage}
+    COMMENTS_TABLE: ${self:service}-comments-${self:provider.stage}
+    REACTIONS_TABLE: ${self:service}-reactions-${self:provider.stage}
+    OTP_TABLE: ${self:service}-otp-${self:provider.stage}
+    S3_BUCKET: ${self:service}-pdfs-${self:provider.stage}
+    API_BASE_URL:
+      Fn::Sub: "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}"
+    # SMS Configuration (set these in AWS Parameter Store or Secrets Manager)
+    SMS_PROVIDER: ${ssm:/25pagescript/${self:provider.stage}/sms-provider, 'AWS_SNS'}
+    MSG91_AUTH_KEY: ${ssm:/25pagescript/${self:provider.stage}/msg91-auth-key, ''}
+    MSG91_SENDER_ID: ${ssm:/25pagescript/${self:provider.stage}/msg91-sender-id, 'PGSCPT'}
+    MSG91_TEMPLATE_ID: ${ssm:/25pagescript/${self:provider.stage}/msg91-template-id, ''}
+    # Cashfree Configuration
+    CASHFREE_APP_ID: ${ssm:/25pagescript/${self:provider.stage}/cashfree-app-id, ''}
+    CASHFREE_SECRET_KEY: ${ssm:/25pagescript/${self:provider.stage}/cashfree-secret-key, ''}
+    # JWT Secret for verification tokens
+    JWT_SECRET: ${ssm:/25pagescript/${self:provider.stage}/jwt-secret, 'change-this-secret'}
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:Query
+            - dynamodb:Scan
+          Resource:
+            - !GetAtt ScriptsTable.Arn
+            - !Sub "${ScriptsTable.Arn}/index/*"
+            - !GetAtt CommentsTable.Arn
+            - !Sub "${CommentsTable.Arn}/index/*"
+            - !GetAtt ReactionsTable.Arn
+            - !GetAtt OTPTable.Arn
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutObject
+          Resource:
+            - !Sub "arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*"
+        - Effect: Allow
+          Action:
+            - sns:Publish
+          Resource: "*"
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 3000
+
+functions:
+  # Scripts
+  getScripts:
+    handler: dist/handlers/getScripts.handler
+    events:
+      - http:
+          path: /scripts
+          method: get
+          cors: true
+
+  getScriptById:
+    handler: dist/handlers/getScriptById.handler
+    events:
+      - http:
+          path: /scripts/{id}
+          method: get
+          cors: true
+
+  uploadScript:
+    handler: dist/handlers/uploadScript.handler
+    timeout: 60
+    memorySize: 512
+    events:
+      - http:
+          path: /scripts/upload
+          method: post
+          cors: true
+
+  updateScript:
+    handler: dist/handlers/updateScript.handler
+    events:
+      - http:
+          path: /scripts/{id}
+          method: patch
+          cors: true
+
+  getGenres:
+    handler: dist/handlers/getGenres.handler
+    events:
+      - http:
+          path: /genres
+          method: get
+          cors: true
+
+  # OTP
+  sendOtp:
+    handler: dist/handlers/sendOtp.handler
+    events:
+      - http:
+          path: /otp/send
+          method: post
+          cors: true
+
+  verifyOtp:
+    handler: dist/handlers/verifyOtp.handler
+    events:
+      - http:
+          path: /otp/verify
+          method: post
+          cors: true
+
+  # Likes & Dislikes
+  likeScript:
+    handler: dist/handlers/likeScript.handler
+    events:
+      - http:
+          path: /scripts/{id}/like
+          method: post
+          cors: true
+
+  dislikeScript:
+    handler: dist/handlers/dislikeScript.handler
+    events:
+      - http:
+          path: /scripts/{id}/dislike
+          method: post
+          cors: true
+
+  getReaction:
+    handler: dist/handlers/getReaction.handler
+    events:
+      - http:
+          path: /scripts/{id}/reaction
+          method: get
+          cors: true
+
+  # Comments
+  getComments:
+    handler: dist/handlers/getComments.handler
+    events:
+      - http:
+          path: /scripts/{id}/comments
+          method: get
+          cors: true
+
+  addComment:
+    handler: dist/handlers/addComment.handler
+    events:
+      - http:
+          path: /scripts/{id}/comments
+          method: post
+          cors: true
+
+  # Payments
+  paymentWebhook:
+    handler: dist/handlers/paymentWebhook.handler
+    events:
+      - http:
+          path: /payments/webhook
+          method: post
+          cors: true
+
+  verifyPayment:
+    handler: dist/handlers/verifyPayment.handler
+    events:
+      - http:
+          path: /payments/verify
+          method: post
+          cors: true
+
+resources:
+  Resources:
+    # S3 Bucket for Script PDFs
+    ScriptsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.S3_BUCKET}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+                - "*"
+              AllowedMethods:
+                - GET
+                - PUT
+              AllowedOrigins:
+                - "*"
+              MaxAge: 3600
+
+    # DynamoDB Tables
+    ScriptsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.SCRIPTS_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: scriptId
+            AttributeType: S
+          - AttributeName: genre
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: S
+        KeySchema:
+          - AttributeName: scriptId
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: genre-createdAt-index
+            KeySchema:
+              - AttributeName: genre
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+
+    CommentsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.COMMENTS_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: scriptId
+            AttributeType: S
+          - AttributeName: commentId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: scriptId
+            KeyType: HASH
+          - AttributeName: commentId
+            KeyType: RANGE
+
+    ReactionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.REACTIONS_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: scriptId
+            AttributeType: S
+          - AttributeName: deviceId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: scriptId
+            KeyType: HASH
+          - AttributeName: deviceId
+            KeyType: RANGE
+
+    OTPTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.OTP_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: otpId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: otpId
+            KeyType: HASH
+        TimeToLiveSpecification:
+          AttributeName: expiresAt
+          Enabled: true
+
+  Outputs:
+    ApiGatewayRestApiId:
+      Value:
+        Ref: ApiGatewayRestApi
+      Export:
+        Name: ${self:service}-${self:provider.stage}-ApiGatewayRestApiId
+
+    ApiEndpoint:
+      Value:
+        Fn::Sub: "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}"
+      Export:
+        Name: ${self:service}-${self:provider.stage}-ApiEndpoint

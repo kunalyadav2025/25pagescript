@@ -1,0 +1,30 @@
+{
+  "name": "25pagescript-backend",
+  "version": "1.0.0",
+  "description": "Backend API for 25PageScript",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "deploy": "serverless deploy",
+    "deploy:prod": "serverless deploy --stage prod",
+    "offline": "serverless offline",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.975.0",
+    "@aws-sdk/client-s3": "^3.975.0",
+    "@aws-sdk/client-sns": "^3.975.0",
+    "@aws-sdk/lib-dynamodb": "^3.478.0",
+    "@aws-sdk/s3-request-presigner": "^3.975.0",
+    "axios": "^1.13.4",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.160",
+    "@types/node": "^20.10.5",
+    "@types/uuid": "^9.0.7",
+    "serverless": "^3.38.0",
+    "serverless-offline": "^13.3.2",
+    "typescript": "^5.3.3"
+  }
+}
