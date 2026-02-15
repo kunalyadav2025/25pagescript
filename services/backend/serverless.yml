@@ -61,10 +61,24 @@ provider:
 
 plugins:
   - serverless-offline
+  - serverless-domain-manager
 
 custom:
   serverless-offline:
     httpPort: 3000
+
+  # Custom domain configuration
+  customDomain:
+    domainName: api.25pagescript.com
+    stage: ${self:provider.stage}
+    basePath: ''
+    certificateName: '*.25pagescript.com'
+    createRoute53Record: true
+    createRoute53IPv6Record: true
+    endpointType: REGIONAL
+    securityPolicy: tls_1_2
+    apiType: rest
+    autoDomain: false
 
 functions:
   # Scripts

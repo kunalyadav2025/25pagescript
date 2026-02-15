@@ -1,0 +1,37 @@
+{
+  "name": "25pagescript",
+  "version": "1.0.0",
+  "private": true,
+  "description": "25PageScript - Discover & Share Film Scripts",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "services/*"
+  ],
+  "scripts": {
+    "mobile:install": "cd apps/mobile && npm install",
+    "mobile:start": "cd apps/mobile && npm start",
+    "mobile:android": "cd apps/mobile && npm run android",
+    "mobile:ios": "cd apps/mobile && npm run ios",
+    "web:install": "cd apps/web && npm install",
+    "web:dev": "cd apps/web && npm run dev",
+    "web:build": "cd apps/web && npm run build",
+    "web:start": "cd apps/web && npm run start",
+    "backend:install": "cd services/backend && npm install",
+    "backend:build": "cd services/backend && npm run build",
+    "backend:deploy": "cd services/backend && npm run deploy",
+    "backend:deploy:prod": "cd services/backend && npm run deploy:prod",
+    "backend:offline": "cd services/backend && npm run offline",
+    "install:all": "npm run mobile:install && npm run web:install && npm run backend:install"
+  },
+  "keywords": [
+    "scripts",
+    "filmmaking",
+    "react-native",
+    "nextjs",
+    "aws",
+    "serverless"
+  ],
+  "author": "",
+  "license": "UNLICENSED"
+}

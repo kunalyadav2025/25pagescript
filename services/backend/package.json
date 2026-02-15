@@ -24,6 +24,7 @@
     "@types/node": "^20.10.5",
     "@types/uuid": "^9.0.7",
     "serverless": "^3.38.0",
+    "serverless-domain-manager": "^9.1.0",
     "serverless-offline": "^13.3.2",
     "typescript": "^5.3.3"
   }
