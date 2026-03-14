@@ -1,4 +1,4 @@
-import { Script, ScriptsListResponse, Genre, ReactionResponse, GetReactionResponse, Comment, CommentsResponse } from '@/types';
+import { Script, ScriptsListResponse, Genre, ReactionResponse, GetReactionResponse, Comment, CommentsResponse, OTPSendResponse, OTPVerifyResponse, UploadScriptResponse } from '@/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.25pagescript.com';
 
@@ -120,6 +120,75 @@ export async function addComment(
 
   if (!response.ok) {
     throw new Error('Failed to post comment');
+  }
+
+  return response.json();
+}
+
+// ============ OTP ============
+
+export async function sendOTP(mobile: string): Promise<OTPSendResponse> {
+  const response = await fetch(`${API_BASE_URL}/otp/send`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ mobile }),
+  });
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.error || data.message || 'Failed to send OTP');
+  }
+
+  return response.json();
+}
+
+export async function verifyOTP(otpId: string, otp: string): Promise<OTPVerifyResponse> {
+  const response = await fetch(`${API_BASE_URL}/otp/verify`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ otpId, otp }),
+  });
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.error || data.message || 'Failed to verify OTP');
+  }
+
+  return response.json();
+}
+
+// ============ UPLOAD ============
+
+export async function uploadScript(data: {
+  verificationToken: string;
+  writerName: string;
+  writerMobile: string;
+  title: string;
+  logline: string;
+  synopsis: string;
+  genre: Genre;
+  language: string;
+  hasCopyright: boolean;
+  copyrightNumber?: string;
+  scriptFileBase64: string;
+  scriptFileName: string;
+  pageCount: number;
+}): Promise<UploadScriptResponse> {
+  const response = await fetch(`${API_BASE_URL}/scripts/upload`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || errorData.message || 'Failed to upload script');
   }
 
   return response.json();

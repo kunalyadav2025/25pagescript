@@ -93,3 +93,52 @@ export interface CommentsResponse {
   limit: number;
   hasMore: boolean;
 }
+
+// Languages
+export const LANGUAGES = [
+  'Hindi',
+  'English',
+  'Tamil',
+  'Telugu',
+  'Malayalam',
+  'Kannada',
+  'Bengali',
+  'Marathi',
+  'Gujarati',
+  'Punjabi',
+  'Other',
+];
+
+// OTP Types
+export interface OTPSendResponse {
+  otpId: string;
+  message: string;
+}
+
+export interface OTPVerifyResponse {
+  verified: boolean;
+  verificationToken: string;
+}
+
+// Upload Types
+export interface UploadFormData {
+  writerName: string;
+  writerMobile: string;
+  otpId: string;
+  verificationToken: string;
+  title: string;
+  logline: string;
+  synopsis: string;
+  genre: Genre;
+  language: string;
+  hasCopyright: boolean;
+  copyrightNumber: string;
+  scriptFile: File | null;
+  pageCount: number;
+}
+
+export interface UploadScriptResponse {
+  scriptId: string;
+  paymentOrderId: string;
+  paymentSessionId: string;
+}
