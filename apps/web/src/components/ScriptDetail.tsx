@@ -8,11 +8,11 @@ import { getScriptById } from '@/lib/api';
 import LikeDislikeButtons from './LikeDislikeButtons';
 import CommentSection from './CommentSection';
 
-// Dynamic import for PdfViewer to avoid SSR issues with react-pdf
-const PdfViewer = dynamic(() => import('./PdfViewer'), {
+// Dynamic import for InlinePdfViewer to avoid SSR issues with react-pdf
+const InlinePdfViewer = dynamic(() => import('./InlinePdfViewer'), {
   ssr: false,
   loading: () => (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-95 flex items-center justify-center">
+    <div className="flex items-center justify-center py-12">
       <div className="text-gray-400">Loading PDF viewer...</div>
     </div>
   ),
@@ -26,7 +26,6 @@ export default function ScriptDetail({ scriptId }: ScriptDetailProps) {
   const [script, setScript] = useState<Script | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showPdfViewer, setShowPdfViewer] = useState(false);
 
   useEffect(() => {
     async function fetchScript() {
@@ -185,16 +184,13 @@ export default function ScriptDetail({ scriptId }: ScriptDetailProps) {
           </div>
         </div>
 
-        {/* Read Script Button */}
+        {/* Script Content */}
         {script.pdfUrl ? (
-          <button
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-            onClick={() => setShowPdfViewer(true)}
-          >
-            Read Script
-          </button>
+          <div className="mb-6">
+            <InlinePdfViewer pdfUrl={script.pdfUrl} />
+          </div>
         ) : (
-          <div className="w-full bg-gray-800 text-gray-500 font-semibold py-3 px-6 rounded-lg text-center">
+          <div className="w-full bg-gray-800 text-gray-500 font-semibold py-3 px-6 rounded-lg text-center mb-6">
             Script PDF not available
           </div>
         )}
@@ -205,15 +201,6 @@ export default function ScriptDetail({ scriptId }: ScriptDetailProps) {
           initialCommentCount={script.commentCount}
         />
       </div>
-
-      {/* PDF Viewer Modal */}
-      {showPdfViewer && script.pdfUrl && (
-        <PdfViewer
-          pdfUrl={script.pdfUrl}
-          title={script.title}
-          onClose={() => setShowPdfViewer(false)}
-        />
-      )}
     </div>
   );
 }
