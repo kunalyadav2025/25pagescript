@@ -1,20 +1,29 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Script } from '@/types';
+import { Script, Genre } from '@/types';
 import ScriptCard from './ScriptCard';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.25pagescript.com';
 
-export default function ScriptsList() {
+interface ScriptsListProps {
+  genre?: Genre | null;
+}
+
+export default function ScriptsList({ genre }: ScriptsListProps) {
   const [scripts, setScripts] = useState<Script[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchScripts() {
+      setLoading(true);
+      setError(null);
       try {
-        const response = await fetch(`${API_BASE_URL}/scripts`);
+        const url = genre
+          ? `${API_BASE_URL}/scripts?genre=${encodeURIComponent(genre)}`
+          : `${API_BASE_URL}/scripts`;
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error('Failed to fetch scripts');
         }
@@ -28,7 +37,7 @@ export default function ScriptsList() {
     }
 
     fetchScripts();
-  }, []);
+  }, [genre]);
 
   if (loading) {
     return (
