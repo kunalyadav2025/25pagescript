@@ -1,9 +1,20 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Script } from '@/types';
 import { getScriptById } from '@/lib/api';
+
+// Dynamic import for PdfViewer to avoid SSR issues with react-pdf
+const PdfViewer = dynamic(() => import('./PdfViewer'), {
+  ssr: false,
+  loading: () => (
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-95 flex items-center justify-center">
+      <div className="text-gray-400">Loading PDF viewer...</div>
+    </div>
+  ),
+});
 
 interface ScriptDetailProps {
   scriptId: string;
@@ -13,6 +24,7 @@ export default function ScriptDetail({ scriptId }: ScriptDetailProps) {
   const [script, setScript] = useState<Script | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showPdfViewer, setShowPdfViewer] = useState(false);
 
   useEffect(() => {
     async function fetchScript() {
@@ -166,16 +178,28 @@ export default function ScriptDetail({ scriptId }: ScriptDetailProps) {
         </div>
 
         {/* Read Script Button */}
-        <button
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-          onClick={() => {
-            // TODO: Implement PDF viewer
-            alert('PDF viewer coming soon!');
-          }}
-        >
-          Read Script
-        </button>
+        {script.pdfUrl ? (
+          <button
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+            onClick={() => setShowPdfViewer(true)}
+          >
+            Read Script
+          </button>
+        ) : (
+          <div className="w-full bg-gray-800 text-gray-500 font-semibold py-3 px-6 rounded-lg text-center">
+            Script PDF not available
+          </div>
+        )}
       </div>
+
+      {/* PDF Viewer Modal */}
+      {showPdfViewer && script.pdfUrl && (
+        <PdfViewer
+          pdfUrl={script.pdfUrl}
+          title={script.title}
+          onClose={() => setShowPdfViewer(false)}
+        />
+      )}
     </div>
   );
 }
