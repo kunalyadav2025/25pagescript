@@ -76,3 +76,20 @@ export interface ReactionResponse {
 export interface GetReactionResponse {
   reaction: ReactionType;
 }
+
+// Comment Types
+export interface Comment {
+  scriptId: string;
+  commentId: string;
+  commenterName: string;
+  commentText: string;
+  createdAt: string;
+}
+
+export interface CommentsResponse {
+  comments: Comment[];
+  total: number;
+  page: number;
+  limit: number;
+  hasMore: boolean;
+}

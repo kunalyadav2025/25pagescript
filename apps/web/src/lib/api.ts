@@ -1,4 +1,4 @@
-import { Script, ScriptsListResponse, Genre, ReactionResponse, GetReactionResponse } from '@/types';
+import { Script, ScriptsListResponse, Genre, ReactionResponse, GetReactionResponse, Comment, CommentsResponse } from '@/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.25pagescript.com';
 
@@ -78,6 +78,48 @@ export async function getReaction(scriptId: string, deviceId: string): Promise<G
 
   if (!response.ok) {
     throw new Error('Failed to get reaction');
+  }
+
+  return response.json();
+}
+
+// ============ COMMENTS ============
+
+export async function getComments(
+  scriptId: string,
+  params?: { page?: number; limit?: number }
+): Promise<CommentsResponse> {
+  const searchParams = new URLSearchParams();
+  if (params?.page) searchParams.set('page', params.page.toString());
+  if (params?.limit) searchParams.set('limit', params.limit.toString());
+
+  const url = `${API_BASE_URL}/scripts/${scriptId}/comments${searchParams.toString() ? `?${searchParams}` : ''}`;
+
+  const response = await fetch(url, {
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch comments');
+  }
+
+  return response.json();
+}
+
+export async function addComment(
+  scriptId: string,
+  data: { name: string; comment: string }
+): Promise<Comment> {
+  const response = await fetch(`${API_BASE_URL}/scripts/${scriptId}/comments`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to post comment');
   }
 
   return response.json();

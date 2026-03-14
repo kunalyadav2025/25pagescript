@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Script } from '@/types';
 import { getScriptById } from '@/lib/api';
 import LikeDislikeButtons from './LikeDislikeButtons';
+import CommentSection from './CommentSection';
 
 // Dynamic import for PdfViewer to avoid SSR issues with react-pdf
 const PdfViewer = dynamic(() => import('./PdfViewer'), {
@@ -188,6 +189,12 @@ export default function ScriptDetail({ scriptId }: ScriptDetailProps) {
             Script PDF not available
           </div>
         )}
+
+        {/* Comments Section */}
+        <CommentSection
+          scriptId={script.scriptId}
+          initialCommentCount={script.commentCount}
+        />
       </div>
 
       {/* PDF Viewer Modal */}
