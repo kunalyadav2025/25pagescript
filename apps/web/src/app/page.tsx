@@ -1,8 +1,18 @@
+import { ScriptsList } from '@/components';
+
 export default function Home() {
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold text-white mb-4">25PageScript</h1>
-      <p className="text-gray-400 text-lg">Discover and Share Film Scripts</p>
+    <div className="min-h-[calc(100vh-4rem)]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Hero Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-white mb-4">Discover Film Scripts</h1>
+          <p className="text-gray-400 text-lg">Browse and read scripts from talented writers</p>
+        </div>
+
+        {/* Scripts Grid */}
+        <ScriptsList />
+      </div>
     </div>
   );
 }
