@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
-// Set up PDF.js worker
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+// Set up PDF.js worker - use cdnjs with explicit HTTPS and .js extension for better compatibility
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 interface PdfViewerProps {
   pdfUrl: string;
@@ -20,6 +20,14 @@ export default function PdfViewer({ pdfUrl, title, onClose }: PdfViewerProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Validate PDF URL on mount
+  useEffect(() => {
+    if (!pdfUrl) {
+      setError('No PDF URL provided');
+      setLoading(false);
+    }
+  }, [pdfUrl]);
+
   const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
     setLoading(false);
@@ -27,9 +35,10 @@ export default function PdfViewer({ pdfUrl, title, onClose }: PdfViewerProps) {
 
   const onDocumentLoadError = useCallback((error: Error) => {
     console.error('PDF load error:', error);
-    setError('Failed to load PDF. Please try again.');
+    console.error('PDF URL:', pdfUrl);
+    setError(`Failed to load PDF: ${error.message}`);
     setLoading(false);
-  }, []);
+  }, [pdfUrl]);
 
   const goToPrevPage = () => {
     setPageNumber((prev) => Math.max(prev - 1, 1));
