@@ -1,4 +1,4 @@
-import { Script, ScriptsListResponse, Genre } from '@/types';
+import { Script, ScriptsListResponse, Genre, ReactionResponse, GetReactionResponse } from '@/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.25pagescript.com';
 
@@ -32,6 +32,52 @@ export async function getScriptById(scriptId: string): Promise<Script> {
 
   if (!response.ok) {
     throw new Error('Failed to fetch script');
+  }
+
+  return response.json();
+}
+
+// ============ REACTIONS ============
+
+export async function likeScript(scriptId: string, deviceId: string): Promise<ReactionResponse> {
+  const response = await fetch(`${API_BASE_URL}/scripts/${scriptId}/like`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ deviceId }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to like script');
+  }
+
+  return response.json();
+}
+
+export async function dislikeScript(scriptId: string, deviceId: string): Promise<ReactionResponse> {
+  const response = await fetch(`${API_BASE_URL}/scripts/${scriptId}/dislike`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ deviceId }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to dislike script');
+  }
+
+  return response.json();
+}
+
+export async function getReaction(scriptId: string, deviceId: string): Promise<GetReactionResponse> {
+  const response = await fetch(`${API_BASE_URL}/scripts/${scriptId}/reaction?deviceId=${encodeURIComponent(deviceId)}`, {
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to get reaction');
   }
 
   return response.json();

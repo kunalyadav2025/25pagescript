@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Script } from '@/types';
 import { getScriptById } from '@/lib/api';
+import LikeDislikeButtons from './LikeDislikeButtons';
 
 // Dynamic import for PdfViewer to avoid SSR issues with react-pdf
 const PdfViewer = dynamic(() => import('./PdfViewer'), {
@@ -161,16 +162,13 @@ export default function ScriptDetail({ scriptId }: ScriptDetailProps) {
           </div>
         )}
 
-        {/* Stats */}
-        <div className="flex items-center gap-6 py-4 border-y border-gray-800 mb-6">
-          <div className="flex items-center gap-2 text-gray-400">
-            <span className="text-xl">👍</span>
-            <span>{script.likeCount} likes</span>
-          </div>
-          <div className="flex items-center gap-2 text-gray-400">
-            <span className="text-xl">👎</span>
-            <span>{script.dislikeCount} dislikes</span>
-          </div>
+        {/* Reactions & Stats */}
+        <div className="flex flex-wrap items-center gap-6 py-4 border-y border-gray-800 mb-6">
+          <LikeDislikeButtons
+            scriptId={script.scriptId}
+            initialLikeCount={script.likeCount}
+            initialDislikeCount={script.dislikeCount}
+          />
           <div className="flex items-center gap-2 text-gray-400">
             <span className="text-xl">💬</span>
             <span>{script.commentCount} comments</span>

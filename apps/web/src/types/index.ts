@@ -64,3 +64,15 @@ export interface ScriptsListResponse {
   limit: number;
   hasMore: boolean;
 }
+
+// Reaction Types
+export type ReactionType = 'LIKE' | 'DISLIKE' | null;
+
+export interface ReactionResponse {
+  likeCount: number;
+  dislikeCount: number;
+}
+
+export interface GetReactionResponse {
+  reaction: ReactionType;
+}
