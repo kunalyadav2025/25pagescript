@@ -15,7 +15,7 @@ export default function ScriptCard({ script }: ScriptCardProps) {
   };
 
   return (
-    <Link href={`/scripts/${script.scriptId}`}>
+    <Link href={`/script?id=${script.scriptId}`}>
       <article className="bg-gray-900 rounded-lg p-5 hover:bg-gray-800 transition-colors border border-gray-800 hover:border-gray-700">
         {/* Genre Badge */}
         <span className="inline-block px-2 py-1 text-xs font-medium bg-gray-700 text-gray-300 rounded mb-3">
