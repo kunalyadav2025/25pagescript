@@ -1,5 +1,6 @@
 import './globals.css';
 import { Header } from '@/components';
+import Providers from '@/components/Providers';
 
 export const metadata = {
   title: '25PageScript',
@@ -12,10 +13,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body>
-        <Header />
-        <main className="pt-16">{children}</main>
+        <Providers>
+          <Header />
+          <main className="pt-16">{children}</main>
+        </Providers>
       </body>
     </html>
   );
