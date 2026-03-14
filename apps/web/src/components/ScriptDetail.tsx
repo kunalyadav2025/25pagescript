@@ -176,19 +176,30 @@ export default function ScriptDetail({ scriptId }: ScriptDetailProps) {
           </div>
         </div>
 
-        {/* Read Script Button */}
-        {script.pdfUrl ? (
-          <button
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-            onClick={() => setShowPdfViewer(true)}
+        {/* Action Buttons */}
+        <div className="space-y-3">
+          {/* Read Script Button */}
+          {script.pdfUrl ? (
+            <button
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+              onClick={() => setShowPdfViewer(true)}
+            >
+              Read Script
+            </button>
+          ) : (
+            <div className="w-full bg-gray-800 text-gray-500 font-semibold py-3 px-6 rounded-lg text-center">
+              Script PDF not available
+            </div>
+          )}
+
+          {/* Edit Script Button */}
+          <Link
+            href={`/edit?id=${script.scriptId}`}
+            className="block w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors text-center border border-gray-700"
           >
-            Read Script
-          </button>
-        ) : (
-          <div className="w-full bg-gray-800 text-gray-500 font-semibold py-3 px-6 rounded-lg text-center">
-            Script PDF not available
-          </div>
-        )}
+            Edit Script
+          </Link>
+        </div>
 
         {/* Comments Section */}
         <CommentSection

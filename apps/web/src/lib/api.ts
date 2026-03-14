@@ -193,3 +193,35 @@ export async function uploadScript(data: {
 
   return response.json();
 }
+
+// ============ EDIT SCRIPT ============
+
+export async function updateScript(
+  scriptId: string,
+  data: {
+    verificationToken: string;
+    writerMobile: string;
+    title?: string;
+    logline?: string;
+    synopsis?: string;
+    genre?: Genre;
+    language?: string;
+    hasCopyright?: boolean;
+    copyrightNumber?: string;
+  }
+): Promise<Script> {
+  const response = await fetch(`${API_BASE_URL}/scripts/${scriptId}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || errorData.message || 'Failed to update script');
+  }
+
+  return response.json();
+}

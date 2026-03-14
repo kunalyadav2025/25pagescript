@@ -142,3 +142,17 @@ export interface UploadScriptResponse {
   paymentOrderId: string;
   paymentSessionId: string;
 }
+
+// Edit Script Types
+export interface EditScriptFormData {
+  writerMobile: string;
+  otpId: string;
+  verificationToken: string;
+  title: string;
+  logline: string;
+  synopsis: string;
+  genre: Genre;
+  language: string;
+  hasCopyright: boolean;
+  copyrightNumber: string;
+}
