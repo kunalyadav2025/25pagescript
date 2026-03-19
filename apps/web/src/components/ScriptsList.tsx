@@ -16,9 +16,10 @@ const CONTENT_TYPE_LABELS: Record<ContentType, string> = {
 interface ScriptsListProps {
   genre?: Genre | null;
   contentType?: ContentType;
+  searchQuery?: string;
 }
 
-export default function ScriptsList({ genre, contentType = 'scripts' }: ScriptsListProps) {
+export default function ScriptsList({ genre, contentType = 'scripts', searchQuery = '' }: ScriptsListProps) {
   const [scripts, setScripts] = useState<Script[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -69,10 +70,23 @@ export default function ScriptsList({ genre, contentType = 'scripts' }: ScriptsL
     );
   }
 
-  // Filter scripts by content type (scripts without contentType default to 'scripts')
+  // Filter scripts by content type and search query
   const filteredScripts = scripts.filter((script) => {
     const scriptType = script.contentType || 'scripts';
-    return scriptType === contentType;
+    if (scriptType !== contentType) return false;
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      const matchesTitle = script.title?.toLowerCase().includes(query);
+      const matchesWriter = script.writer?.name?.toLowerCase().includes(query);
+      const matchesLogline = script.logline?.toLowerCase().includes(query);
+      const matchesSynopsis = script.synopsis?.toLowerCase().includes(query);
+      const matchesGenre = script.genre?.toLowerCase().includes(query);
+      return matchesTitle || matchesWriter || matchesLogline || matchesSynopsis || matchesGenre;
+    }
+
+    return true;
   });
 
   if (filteredScripts.length === 0) {

@@ -2,6 +2,7 @@ export { default as Header } from './Header';
 export { default as ScriptCard } from './ScriptCard';
 export { default as ScriptsList } from './ScriptsList';
 export { default as GenreFilter } from './GenreFilter';
+export { default as SearchBar } from './SearchBar';
 export { default as HomeContent } from './HomeContent';
 export { default as ScriptDetail } from './ScriptDetail';
 export { default as InlinePdfViewer } from './InlinePdfViewer';
