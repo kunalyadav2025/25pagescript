@@ -1,6 +1,6 @@
 export type ContentType = 'scripts' | 'plots' | 'screenplay' | 'jokes';
 
-export const CONTENT_TYPES: ContentType[] = ['scripts'];
+export const CONTENT_TYPES: ContentType[] = ['scripts', 'plots'];
 
 export type Genre =
   | 'Drama'
