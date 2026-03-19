@@ -22,11 +22,11 @@ export default function HomeContent() {
 
   return (
     <>
-      {/* Content Type Filter */}
-      <ContentTypeFilter selectedType={selectedContentType} onTypeChange={handleContentTypeChange} />
-
-      {/* Search Bar */}
-      <SearchBar onSearch={setSearchQuery} />
+      {/* Content Type Filter & Search Bar - same row */}
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <ContentTypeFilter selectedType={selectedContentType} onTypeChange={handleContentTypeChange} />
+        <SearchBar onSearch={setSearchQuery} />
+      </div>
 
       {/* Genre Filter - only show for Scripts */}
       {selectedContentType === 'scripts' && (
