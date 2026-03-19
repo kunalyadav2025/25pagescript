@@ -51,7 +51,7 @@ export default function ScriptsList({ genre, contentType = 'scripts', searchQuer
   if (loading) {
     return (
       <div className="flex justify-center items-center py-20">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-black dark:border-white"></div>
       </div>
     );
   }
@@ -59,10 +59,10 @@ export default function ScriptsList({ genre, contentType = 'scripts', searchQuer
   if (error) {
     return (
       <div className="text-center py-20">
-        <p className="text-red-400 mb-4">{error}</p>
+        <p className="text-red-500 dark:text-red-400 mb-4">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors"
+          className="px-4 py-2 bg-gray-200 dark:bg-gray-800 text-black dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
         >
           Try Again
         </button>
@@ -92,7 +92,7 @@ export default function ScriptsList({ genre, contentType = 'scripts', searchQuer
   if (filteredScripts.length === 0) {
     return (
       <div className="text-center py-20">
-        <p className="text-gray-400">No {CONTENT_TYPE_LABELS[contentType]} found. Be the first to upload!</p>
+        <p className="text-gray-600 dark:text-gray-400">No {CONTENT_TYPE_LABELS[contentType]} found. Be the first to upload!</p>
       </div>
     );
   }

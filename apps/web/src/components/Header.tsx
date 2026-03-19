@@ -7,28 +7,28 @@ export default function Header() {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 dark:bg-black/90 backdrop-blur-sm border-b border-gray-800 dark:border-gray-800">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-white">25PageScript</span>
+            <span className="text-2xl font-bold text-black dark:text-white">25PageScript</span>
           </Link>
 
           {/* Tagline */}
-          <p className="hidden sm:block text-gray-400 text-sm">Share a powerful and engaging scripts</p>
+          <p className="hidden sm:block text-gray-600 dark:text-gray-400 text-sm">Share a powerful and engaging scripts</p>
 
           {/* Navigation */}
           <nav className="flex items-center space-x-4">
             <Link
               href="/"
-              className="text-gray-300 hover:text-white transition-colors"
+              className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
             >
               Home
             </Link>
             <Link
               href="/upload"
-              className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+              className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
             >
               Upload Script
             </Link>
@@ -36,7 +36,7 @@ export default function Header() {
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
+              className="p-2 rounded-lg bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
               aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
             >
               {theme === 'dark' ? (

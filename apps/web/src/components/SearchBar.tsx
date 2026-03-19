@@ -28,7 +28,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
           value={query}
           onChange={handleChange}
           placeholder="Search by title, writer, genre..."
-          className="w-full px-4 py-3 pl-12 bg-gray-800 text-white rounded-lg border border-gray-700 focus:border-gray-500 focus:outline-none placeholder-gray-500"
+          className="w-full px-4 py-3 pl-12 bg-gray-100 dark:bg-gray-800 text-black dark:text-white rounded-lg border border-gray-300 dark:border-gray-700 focus:border-gray-400 dark:focus:border-gray-500 focus:outline-none placeholder-gray-500"
         />
         <svg
           className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500"
