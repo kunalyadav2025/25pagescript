@@ -21,9 +21,23 @@ const InlinePdfViewer = dynamic(() => import('./InlinePdfViewer'), {
 type FontSize = 'normal' | 'large' | 'xlarge';
 
 const FONT_SIZE_CONFIG: Record<FontSize, { label: string; scale: number }> = {
-  normal: { label: 'Normal', scale: 1.0 },
-  large: { label: 'Large', scale: 1.2 },
-  xlarge: { label: 'X-Large', scale: 1.4 },
+  normal: { label: 'A', scale: 1.0 },
+  large: { label: 'A', scale: 1.2 },
+  xlarge: { label: 'A', scale: 1.4 },
+};
+
+const GENRE_COLORS: Record<string, string> = {
+  'Drama': '#8B5CF6',
+  'Thriller': '#EF4444',
+  'Comedy': '#F59E0B',
+  'Romance': '#EC4899',
+  'Action': '#F97316',
+  'Horror': '#DC2626',
+  'Sci-Fi': '#06B6D4',
+  'Mystery': '#7C3AED',
+  'Family': '#10B981',
+  'Documentary': '#6B7280',
+  'Other': '#9CA3AF',
 };
 
 interface ScriptDetailProps {
@@ -111,23 +125,40 @@ export default function ScriptDetail({ scriptId }: ScriptDetailProps) {
             Back to Scripts
           </Link>
           <div className="flex items-center gap-4">
-            {/* Font Size Control */}
+            {/* Font Size Control - Mobile Style */}
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400 hidden sm:inline">Font:</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400 hidden sm:inline">Size</span>
               <div className="flex gap-1">
-                {(Object.keys(FONT_SIZE_CONFIG) as FontSize[]).map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setFontSize(size)}
-                    className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
-                      fontSize === size
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
-                    }`}
-                  >
-                    {FONT_SIZE_CONFIG[size].label}
-                  </button>
-                ))}
+                <button
+                  onClick={() => setFontSize('normal')}
+                  className={`w-7 h-7 rounded-full border flex items-center justify-center transition-colors ${
+                    fontSize === 'normal'
+                      ? 'bg-blue-500 border-blue-500 text-white'
+                      : 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300'
+                  }`}
+                >
+                  <span className="text-xs font-bold">A</span>
+                </button>
+                <button
+                  onClick={() => setFontSize('large')}
+                  className={`w-7 h-7 rounded-full border flex items-center justify-center transition-colors ${
+                    fontSize === 'large'
+                      ? 'bg-blue-500 border-blue-500 text-white'
+                      : 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300'
+                  }`}
+                >
+                  <span className="text-sm font-bold">A</span>
+                </button>
+                <button
+                  onClick={() => setFontSize('xlarge')}
+                  className={`w-7 h-7 rounded-full border flex items-center justify-center transition-colors ${
+                    fontSize === 'xlarge'
+                      ? 'bg-blue-500 border-blue-500 text-white'
+                      : 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300'
+                  }`}
+                >
+                  <span className="text-base font-bold">A</span>
+                </button>
               </div>
             </div>
             <Link
@@ -143,85 +174,99 @@ export default function ScriptDetail({ scriptId }: ScriptDetailProps) {
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Left Column - Script Info */}
           <div className="lg:w-1/3 xl:w-1/4">
-            {/* Header Section */}
-            <div className="mb-4 p-4 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
-              <div className="flex flex-wrap items-center gap-2 mb-3">
-                <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded">
+            {/* Header Section - Compact */}
+            <div className="mb-3 p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
+              {/* Genre accent bar */}
+              <div
+                className="h-1 -mx-3 -mt-3 mb-3 rounded-t-lg"
+                style={{ backgroundColor: GENRE_COLORS[script.genre] || GENRE_COLORS['Other'] }}
+              />
+
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                <span
+                  className="inline-block px-2 py-0.5 text-xs font-semibold text-white rounded"
+                  style={{ backgroundColor: GENRE_COLORS[script.genre] || GENRE_COLORS['Other'] }}
+                >
                   {script.genre}
                 </span>
-                <span className="text-xs text-gray-600 dark:text-gray-400">{script.language}</span>
-                <span className="text-xs text-gray-600 dark:text-gray-400">{script.pageCount} pages</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">{script.language}</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">•</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">{script.pageCount}p</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">•</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">{formatDate(script.createdAt)}</span>
               </div>
 
-              <h1 className="text-xl font-bold text-black dark:text-white mb-2">{script.title}</h1>
-
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">{formatDate(script.createdAt)}</p>
-
-              {/* Copyright Badge */}
-              {script.copyright.hasCertificate && (
-                <div className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded text-xs">
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                  <span className="font-medium">Copyright</span>
-                </div>
-              )}
-            </div>
-
-            {/* Reactions */}
-            <div className="mb-4 p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
-              <div className="flex items-center gap-4">
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <h1 className="text-lg font-bold text-black dark:text-white leading-tight">{script.title}</h1>
                 <LikeDislikeButtons
                   scriptId={script.scriptId}
                   initialLikeCount={script.likeCount}
                   initialDislikeCount={script.dislikeCount}
                 />
-                <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400 text-sm">
-                  <span>💬</span>
-                  <span>{script.commentCount}</span>
+              </div>
+
+              {/* Copyright Badge - Shows full number */}
+              <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs ${
+                script.copyright.hasCertificate
+                  ? 'bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800'
+                  : 'bg-orange-50 dark:bg-orange-900/30 border border-orange-200 dark:border-orange-800'
+              }`}>
+                <span>{script.copyright.hasCertificate ? '🔒' : '🔓'}</span>
+                <span className={`font-semibold ${
+                  script.copyright.hasCertificate
+                    ? 'text-green-700 dark:text-green-400'
+                    : 'text-orange-700 dark:text-orange-400'
+                }`}>
+                  {script.copyright.hasCertificate
+                    ? `Copyright: ${script.copyright.certificateNumber || 'Protected'}`
+                    : 'Not Copyrighted'}
+                </span>
+              </div>
+            </div>
+
+            {/* THE PITCH & SYNOPSIS - Side by Side */}
+            <div className="mb-3 p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
+              <div className="flex gap-4">
+                {/* Pitch */}
+                <div className="flex-1">
+                  <h2 className="text-[10px] font-semibold text-blue-500 dark:text-blue-400 uppercase tracking-wider mb-1">
+                    The Pitch
+                  </h2>
+                  <p
+                    className="text-gray-800 dark:text-gray-200 italic leading-snug line-clamp-4"
+                    style={{ fontSize: `${fontScale * 0.8125}rem` }}
+                  >
+                    "{script.logline}"
+                  </p>
+                </div>
+                {/* Synopsis */}
+                <div className="flex-1">
+                  <h2 className="text-[10px] font-semibold text-blue-500 dark:text-blue-400 uppercase tracking-wider mb-1">
+                    Synopsis
+                  </h2>
+                  <p
+                    className="text-gray-600 dark:text-gray-400 leading-snug line-clamp-4"
+                    style={{ fontSize: `${fontScale * 0.75}rem` }}
+                  >
+                    {script.synopsis}
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* THE PITCH Section */}
-            <div className="mb-4 p-4 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
-              <h2 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-                The Pitch
-              </h2>
-              <p
-                className="text-gray-800 dark:text-gray-200 italic leading-relaxed"
-                style={{ fontSize: `${fontScale * 0.875}rem` }}
-              >
-                "{script.logline}"
-              </p>
-            </div>
-
-            {/* SYNOPSIS Section */}
-            <div className="mb-4 p-4 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
-              <h2 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-                Synopsis
-              </h2>
-              <p
-                className="text-gray-800 dark:text-gray-200 leading-relaxed"
-                style={{ fontSize: `${fontScale * 0.875}rem` }}
-              >
-                {script.synopsis}
-              </p>
-            </div>
-
-            {/* Writer Contact Section */}
-            <div className="mb-4 p-4 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
-              <h2 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+            {/* Writer Contact Section - Compact */}
+            <div className="mb-3 p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
+              <h2 className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
                 Writer
               </h2>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-lg font-bold">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-bold">
                   {script.writer.name.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <p className="font-medium text-black dark:text-white">{script.writer.name}</p>
+                  <p className="text-sm font-medium text-black dark:text-white">{script.writer.name}</p>
                   {script.writer.mobile && (
-                    <p className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                       </svg>
@@ -229,6 +274,14 @@ export default function ScriptDetail({ scriptId }: ScriptDetailProps) {
                     </p>
                   )}
                 </div>
+              </div>
+            </div>
+
+            {/* Comments & Stats - Compact */}
+            <div className="mb-3 p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
+              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-sm">
+                <span>💬</span>
+                <span>{script.commentCount} comments</span>
               </div>
             </div>
 
