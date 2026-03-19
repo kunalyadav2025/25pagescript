@@ -72,10 +72,7 @@ export default function ScriptsList({ genre, contentType = 'scripts', searchQuer
 
   // Filter scripts by content type and search query
   const filteredScripts = scripts.filter((script) => {
-    const scriptType = script.contentType || 'scripts';
-    if (scriptType !== contentType) return false;
-
-    // Apply search filter
+    // When searching, search across ALL content (ignore content type filter)
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       const matchesTitle = script.title?.toLowerCase().includes(query);
@@ -86,13 +83,19 @@ export default function ScriptsList({ genre, contentType = 'scripts', searchQuer
       return matchesTitle || matchesWriter || matchesLogline || matchesSynopsis || matchesGenre;
     }
 
-    return true;
+    // When not searching, filter by content type
+    const scriptType = script.contentType || 'scripts';
+    return scriptType === contentType;
   });
 
   if (filteredScripts.length === 0) {
     return (
       <div className="text-center py-20">
-        <p className="text-gray-600 dark:text-gray-400">No {CONTENT_TYPE_LABELS[contentType]} found. Be the first to upload!</p>
+        <p className="text-gray-600 dark:text-gray-400">
+          {searchQuery.trim()
+            ? `No results found for "${searchQuery}"`
+            : `No ${CONTENT_TYPE_LABELS[contentType]} found. Be the first to upload!`}
+        </p>
       </div>
     );
   }
