@@ -1,16 +1,24 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Script, Genre } from '@/types';
+import { Script, Genre, ContentType } from '@/types';
 import ScriptCard from './ScriptCard';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.25pagescript.com';
 
+const CONTENT_TYPE_LABELS: Record<ContentType, string> = {
+  scripts: 'scripts',
+  plots: 'plots',
+  screenplay: 'screenplays',
+  jokes: 'jokes',
+};
+
 interface ScriptsListProps {
   genre?: Genre | null;
+  contentType?: ContentType;
 }
 
-export default function ScriptsList({ genre }: ScriptsListProps) {
+export default function ScriptsList({ genre, contentType = 'scripts' }: ScriptsListProps) {
   const [scripts, setScripts] = useState<Script[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +72,7 @@ export default function ScriptsList({ genre }: ScriptsListProps) {
   if (scripts.length === 0) {
     return (
       <div className="text-center py-20">
-        <p className="text-gray-400">No scripts found. Be the first to upload!</p>
+        <p className="text-gray-400">No {CONTENT_TYPE_LABELS[contentType]} found. Be the first to upload!</p>
       </div>
     );
   }

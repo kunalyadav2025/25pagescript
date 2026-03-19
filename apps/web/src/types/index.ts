@@ -1,3 +1,7 @@
+export type ContentType = 'scripts' | 'plots' | 'screenplay' | 'jokes';
+
+export const CONTENT_TYPES: ContentType[] = ['scripts'];
+
 export type Genre =
   | 'Drama'
   | 'Thriller'
@@ -27,6 +31,7 @@ export const GENRES: Genre[] = [
 
 export interface Script {
   scriptId: string;
+  contentType?: ContentType;
   title: string;
   logline: string;
   synopsis: string;
