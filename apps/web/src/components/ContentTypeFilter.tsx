@@ -16,7 +16,7 @@ interface ContentTypeFilterProps {
 
 export default function ContentTypeFilter({ selectedType, onTypeChange }: ContentTypeFilterProps) {
   return (
-    <div className="flex flex-wrap gap-3 justify-center mb-6">
+    <div className="flex flex-wrap gap-3 justify-start mb-6">
       {CONTENT_TYPES.map((type) => (
         <button
           key={type}
