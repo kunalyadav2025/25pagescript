@@ -16,19 +16,19 @@ export default function ScriptCard({ script }: ScriptCardProps) {
 
   return (
     <Link href={`/script?id=${script.scriptId}`}>
-      <article className="bg-gray-900 rounded-lg p-5 hover:bg-gray-800 transition-colors border border-gray-800 hover:border-gray-700">
+      <article className="bg-white dark:bg-gray-900 rounded-lg p-5 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700">
         {/* Genre Badge */}
-        <span className="inline-block px-2 py-1 text-xs font-medium bg-gray-700 text-gray-300 rounded mb-3">
+        <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 dark:bg-gray-700 text-blue-800 dark:text-gray-300 rounded mb-3">
           {script.genre}
         </span>
 
         {/* Title */}
-        <h3 className="text-lg font-semibold text-white mb-2 line-clamp-1">
+        <h3 className="text-lg font-semibold text-black dark:text-white mb-2 line-clamp-1">
           {script.title}
         </h3>
 
         {/* Logline */}
-        <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+        <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
           {script.logline}
         </p>
 
@@ -42,7 +42,7 @@ export default function ScriptCard({ script }: ScriptCardProps) {
         </div>
 
         {/* Stats */}
-        <div className="flex items-center gap-4 mt-3 pt-3 border-t border-gray-800 text-xs text-gray-500">
+        <div className="flex items-center gap-4 mt-3 pt-3 border-t border-gray-200 dark:border-gray-800 text-xs text-gray-500">
           <span className="flex items-center gap-1">
             <span>👍</span> {script.likeCount}
           </span>
