@@ -69,7 +69,13 @@ export default function ScriptsList({ genre, contentType = 'scripts' }: ScriptsL
     );
   }
 
-  if (scripts.length === 0) {
+  // Filter scripts by content type (scripts without contentType default to 'scripts')
+  const filteredScripts = scripts.filter((script) => {
+    const scriptType = script.contentType || 'scripts';
+    return scriptType === contentType;
+  });
+
+  if (filteredScripts.length === 0) {
     return (
       <div className="text-center py-20">
         <p className="text-gray-400">No {CONTENT_TYPE_LABELS[contentType]} found. Be the first to upload!</p>
@@ -79,7 +85,7 @@ export default function ScriptsList({ genre, contentType = 'scripts' }: ScriptsL
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {scripts.map((script) => (
+      {filteredScripts.map((script) => (
         <ScriptCard key={script.scriptId} script={script} />
       ))}
     </div>
