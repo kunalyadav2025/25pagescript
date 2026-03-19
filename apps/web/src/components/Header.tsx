@@ -15,6 +15,9 @@ export default function Header() {
             <span className="text-2xl font-bold text-white">25PageScript</span>
           </Link>
 
+          {/* Tagline */}
+          <p className="hidden sm:block text-gray-400 text-sm">Share a powerful and engaging scripts</p>
+
           {/* Navigation */}
           <nav className="flex items-center space-x-4">
             <Link
